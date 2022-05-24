@@ -8,9 +8,10 @@
         return $row[0];
     }
 
-    function GET($first, $lenght){
+    function GET($first, $lenght, $orderBy){
         require('db.php');
-        $query = "SELECT * FROM employees ORDER BY id LIMIT $first, $lenght";
+        $function = ifOrder($orderBy);
+        $query = "SELECT * FROM employees ORDER BY $function[0] $function[1] LIMIT $first, $lenght";
         $result = $mysqli->query($query);
         $rows = array();
         while ($row= $result-> fetch_assoc()) {
@@ -19,26 +20,50 @@
         return $rows;
     }
 
-    function POST($birth_date, $first_name, $last_name, $gender){
-        require('db.php');
-        $query = "INSERT INTO employees(birth_date, first_name, last_name, gender)
-                VALUES ('$birth_date', '$first_name', '$last_name', '$gender')";
-        $result = $mysqli->query($query);
+    function ifOrder($orderByBy){
+        if($orderBy[0]['column'] == 0){
+            $columnWay[0] = "id";
+        }else if($orderBy[0]['column'] == 1){
+            $columnWay[0] = "birth_date";
+        }else if($orderBy[0]['column'] == 2){
+            $columnWay[0] = "first_name";
+        }else if($orderBy[0]['column'] == 3){
+            $columnWay[0] = "last_name";
+        }else if($orderBy[0]['column'] == 4){
+            $columnWay[0] = "gender";
+        }
+
+        if($orderBy[0]['dir'] == 'asc'){
+            $columnWay[1] = "ASC";
+        }else{
+            $columnWay[1] = "DESC";
+        }
+
+        return $columnWay;
     }
 
-    function DELETE($id){
+    function countRecordSearch($searchValue){
         require('db.php');
-        $query = "DELETE FROM employees
-                WHERE employees.id=$id";
+        $query = "SELECT COUNT(*) 
+                FROM employees 
+                WHERE last_name LIKE '%$searchValue%' OR id  LIKE '%$searchValue%' OR birth_date LIKE '%$searchValue%' OR first_name LIKE '%$searchValue%'";
         $result = $mysqli->query($query);
+        $row= $result-> fetch_array();
+        return $row[0];
     }
 
-    function PUT($id, $birth_date, $first_name, $last_name, $gender){
+    function search($first, $lenght, $orderBy, $searchValue){
         require('db.php');
-        $query = "UPDATE employees
-                SET birth_date='$birth_date', first_name='$first_name', last_name='$last_name', gender='$gender'
-                WHERE employees.id=$id";
-        $result = $mysqli->query($query);
+        $function = ifOrder($orderBy);
+        $query = "SELECT COUNT(*) 
+                FROM employees 
+                WHERE last_name LIKE '%$searchValue%' OR id  LIKE '%$searchValue%' OR birth_date LIKE '%$searchValue%' OR first_name LIKE '%$searchValue%'
+                ORDER BY $function[0] $function[1] LIMIT $first, $lenght";
+        $rows = array();
+        while ($row= $result-> fetch_assoc()) {
+            $rows[]=$row;
+        }
+        return $rows;
     }
 
 ?>
