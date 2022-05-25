@@ -20,7 +20,7 @@
         return $rows;
     }
 
-    function ifOrder($orderByBy){
+    function ifOrder($orderBy){
         if($orderBy[0]['column'] == 0){
             $columnWay[0] = "id";
         }else if($orderBy[0]['column'] == 1){
@@ -52,13 +52,14 @@
         return $row[0];
     }
 
-    function search($first, $lenght, $orderBy, $searchValue){
+    function search($first, $lenght, $searchValue, $orderBy){
         require('db.php');
         $function = ifOrder($orderBy);
-        $query = "SELECT COUNT(*) 
+        $query = "SELECT * 
                 FROM employees 
                 WHERE last_name LIKE '%$searchValue%' OR id  LIKE '%$searchValue%' OR birth_date LIKE '%$searchValue%' OR first_name LIKE '%$searchValue%'
                 ORDER BY $function[0] $function[1] LIMIT $first, $lenght";
+        $result = $mysqli->query($query);
         $rows = array();
         while ($row= $result-> fetch_assoc()) {
             $rows[]=$row;

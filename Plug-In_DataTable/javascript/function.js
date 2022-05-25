@@ -12,7 +12,6 @@ $(document).ready(function () {
             { data: 'first_name' },
             { data: 'last_name' },
             { data: 'gender' },
-            { data: 'hire_date' },
         ],
     });
 });

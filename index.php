@@ -15,7 +15,7 @@
                     if($search['value'] == ""){
                         $array['data'] = GET($page, $size, $orderBy);
                         $array['recordsFiltered'] = $total;
-                        $array['recordsTotal'] = $toal;
+                        $array['recordsTotal'] = $total;
                         echo json_encode($array);
                     }else{
                         $totalSearch = countRecordSearch($search['value']);
